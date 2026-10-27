@@ -1,0 +1,121 @@
+<resources>
+    <string name="app_name">ImprimeDoc</string>
+    <string name="app_tagline">Print and send your documents and photos</string>
+    
+    <!-- Navigation Tabs -->
+    <string name="tab_photos">Photos</string>
+    <string name="tab_documents">Documents</string>
+    <string name="tab_create">Compose</string>
+    <string name="tab_history">History</string>
+    <string name="tab_shops">Print Shops</string>
+    
+    <!-- Language Selection -->
+    <string name="language_title">App Language</string>
+    <string name="lang_french">Français (Default)</string>
+    <string name="lang_english">English</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="switch_language">Change Language</string>
+    
+    <!-- Actions -->
+    <string name="action_print">Print Now</string>
+    <string name="action_send_print">Send to be Printed</string>
+    <string name="action_select_photos">Select Photos</string>
+    <string name="action_select_document">Choose Document (PDF, TXT)</string>
+    <string name="action_take_photo">Take Photo</string>
+    <string name="action_preview">Print Preview</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_clear_all">Clear All</string>
+    <string name="action_share">Share</string>
+    
+    <!-- Print Settings -->
+    <string name="settings_copies">Number of Copies</string>
+    <string name="settings_color_mode">Color Mode</string>
+    <string name="color_full">Color</string>
+    <string name="color_bw">Black &amp; White (B&amp;W)</string>
+    <string name="settings_fit_mode">Layout / Fit</string>
+    <string name="fit_page">Fit to Page (Entire)</string>
+    <string name="fill_page">Fill Page (Crop)</string>
+    <string name="settings_orientation">Orientation</string>
+    <string name="orient_portrait">Portrait (Vertical)</string>
+    <string name="orient_landscape">Landscape (Horizontal)</string>
+    <string name="settings_paper_size">Paper Size</string>
+    <string name="paper_a4">A4 (Standard)</string>
+    <string name="paper_a3">A3 (Large)</string>
+    <string name="paper_letter">Letter (US Letter)</string>
+    <string name="paper_photo">Photo (10x15 cm / 4x6")</string>
+    <string name="settings_duplex">Two-Sided Printing</string>
+    <string name="duplex_single">Single-sided</string>
+    <string name="duplex_double">Double-sided (Duplex)</string>
+    <string name="settings_binding">Finishing / Binding</string>
+    <string name="binding_none">No Binding</string>
+    <string name="binding_staple">Top Left Staple</string>
+    <string name="binding_spiral">Spiral Binding</string>
+    <string name="settings_instructions">Instructions for Printer</string>
+    <string name="instructions_hint">E.g., 100g paper, laminated, blue spiral...</string>
+    
+    <!-- Photo Screen -->
+    <string name="photos_title">Print Photos</string>
+    <string name="photos_subtitle">High-quality photo printing with framing preview</string>
+    <string name="photos_empty">No photos selected</string>
+    <string name="photos_empty_desc">Tap the button below to pick one or more photos to print or send</string>
+    <string name="photos_count">%d photo(s) selected</string>
+    
+    <!-- Document Screen -->
+    <string name="docs_title">Print Documents</string>
+    <string name="docs_subtitle">PDF files, reports, essays, and text documents</string>
+    <string name="docs_empty">No document selected</string>
+    <string name="docs_empty_desc">Select a PDF or text file from your device to print or dispatch to your print shop</string>
+    <string name="doc_name">File Name</string>
+    <string name="doc_size">Size</string>
+    <string name="doc_pages">%d page(s)</string>
+    <string name="doc_status_ready">Ready for printing</string>
+    
+    <!-- Quick Creator Screen -->
+    <string name="create_title">Compose Document</string>
+    <string name="create_subtitle">Create a memo, invoice, or formal letter ready to print</string>
+    <string name="field_doc_title">Document Title</string>
+    <string name="field_doc_title_hint">E.g., Certificate, Formal Notice, Invoice</string>
+    <string name="field_doc_author">Sender / Your Name</string>
+    <string name="field_doc_recipient">Recipient</string>
+    <string name="field_doc_content">Text / Content</string>
+    <string name="field_doc_content_hint">Write the document content here...</string>
+    <string name="action_generate_pdf">Generate PDF &amp; Print</string>
+    <string name="action_generate_send">Generate &amp; Send</string>
+    
+    <!-- Send to Print Modal -->
+    <string name="send_modal_title">Send to Print Shop</string>
+    <string name="send_modal_desc">Prepare file with attached print specifications sheet</string>
+    <string name="recipient_type">Dispatch Method</string>
+    <string name="recipient_app">Share via App (WhatsApp, Email...)</string>
+    <string name="recipient_email">Send Direct Email to Printer</string>
+    <string name="recipient_email_address">Print Shop / Printer Email</string>
+    <string name="send_order_summary">Print Job Specification Sheet</string>
+    <string name="send_success">File and instructions sent successfully</string>
+    
+    <!-- History Screen -->
+    <string name="history_title">Print History</string>
+    <string name="history_subtitle">Log of your recent print jobs and sent files</string>
+    <string name="history_empty">No recent print jobs</string>
+    <string name="history_empty_desc">Your printed jobs and dispatched documents will appear here</string>
+    <string name="status_printed">Printed on Device</string>
+    <string name="status_sent">Sent to Print Shop</string>
+    <string name="action_reprint">Reprint</string>
+    
+    <!-- Shops Screen -->
+    <string name="shops_title">Print Shops &amp; Offices</string>
+    <string name="shops_subtitle">Save regular print centers for instant 1-tap dispatch</string>
+    <string name="shops_empty">No saved print shops</string>
+    <string name="shops_empty_desc">Add your local cybercafé, print shop, or office ePrint email</string>
+    <string name="action_add_shop">Add Print Shop</string>
+    <string name="field_shop_name">Shop / Office Name</string>
+    <string name="field_shop_email">Email (e.g., printer@office.com)</string>
+    <string name="field_shop_phone">WhatsApp or Phone Number</string>
+    <string name="field_shop_notes">Notes / Location</string>
+    
+    <!-- Alerts & Confirmations -->
+    <string name="alert_no_printer">No printer service found. Check Wi-Fi printers or install manufacturer print plugin.</string>
+    <string name="alert_print_started">Sending to print spooler...</string>
+    <string name="alert_print_done">Print dispatched successfully</string>
+    <string name="error_file_open">Could not open selected file</string>
+</resources>

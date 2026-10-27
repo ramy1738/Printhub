@@ -1,0 +1,6 @@
+{
+  "name": "ImprimeDoc",
+  "description": "Imprimez et envoyez facilement vos documents et photos pour impression. Support complet du français, anglais et arabe.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,121 @@
+<resources>
+    <string name="app_name">ImprimeDoc</string>
+    <string name="app_tagline">طباعة وإرسال المستندات والصور للطباعة</string>
+    
+    <!-- Navigation Tabs -->
+    <string name="tab_photos">الصور</string>
+    <string name="tab_documents">المستندات</string>
+    <string name="tab_create">تحرير مستند</string>
+    <string name="tab_history">السجل</string>
+    <string name="tab_shops">مراكز الطباعة</string>
+    
+    <!-- Language Selection -->
+    <string name="language_title">لغة التطبيق</string>
+    <string name="lang_french">الفرنسية (افتراضي)</string>
+    <string name="lang_english">الإنجليزية</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="switch_language">تغيير اللغة</string>
+    
+    <!-- Actions -->
+    <string name="action_print">طباعة الآن</string>
+    <string name="action_send_print">إرسال للطباعة</string>
+    <string name="action_select_photos">اختيار صور</string>
+    <string name="action_select_document">اختيار مستند (PDF, TXT)</string>
+    <string name="action_take_photo">التقاط صورة</string>
+    <string name="action_preview">معاينة قبل الطباعة</string>
+    <string name="action_save">حفظ</string>
+    <string name="action_delete">حذف</string>
+    <string name="action_clear_all">مسح الكل</string>
+    <string name="action_share">مشاركة</string>
+    
+    <!-- Print Settings -->
+    <string name="settings_copies">عدد النسخ</string>
+    <string name="settings_color_mode">وضع الألوان</string>
+    <string name="color_full">ألوان كاملة</string>
+    <string name="color_bw">أبيض وأسود</string>
+    <string name="settings_fit_mode">تنسيق الصفحة</string>
+    <string name="fit_page">ملاءمة كامل الصفحة</string>
+    <string name="fill_page">ملء الصفحة (اقتصاص)</string>
+    <string name="settings_orientation">الاتجاه</string>
+    <string name="orient_portrait">عمودي (رأسي)</string>
+    <string name="orient_landscape">أفقي</string>
+    <string name="settings_paper_size">حجم الورق</string>
+    <string name="paper_a4">A4 (قياسي)</string>
+    <string name="paper_a3">A3 (كبير)</string>
+    <string name="paper_letter">Letter (أمريكي)</string>
+    <string name="paper_photo">صورة (10×15 سم / 4×6 إنش)</string>
+    <string name="settings_duplex">طباعة على الوجهين</string>
+    <string name="duplex_single">وجه واحد</string>
+    <string name="duplex_double">وجهين (مزدوج)</string>
+    <string name="settings_binding">التشطيب والتجليد</string>
+    <string name="binding_none">بدون تجليد</string>
+    <string name="binding_staple">تدبيس الزاوية العلوية</string>
+    <string name="binding_spiral">تجليد لولبي (سلك)</string>
+    <string name="settings_instructions">تعليمات لمركز الطباعة</string>
+    <string name="instructions_hint">مثال: ورق مقوى 100غ، تغليف بلاستيكي، تجليد أزرق...</string>
+    
+    <!-- Photo Screen -->
+    <string name="photos_title">طباعة الصور</string>
+    <string name="photos_subtitle">طباعة صور عالية الجودة مع معاينة وتأطير</string>
+    <string name="photos_empty">لم يتم اختيار أي صورة</string>
+    <string name="photos_empty_desc">اضغط على الزر أدناه لاختيار صورة أو أكثر للطباعة أو الإرسال</string>
+    <string name="photos_count">تم اختيار %d صورة</string>
+    
+    <!-- Document Screen -->
+    <string name="docs_title">طباعة المستندات</string>
+    <string name="docs_subtitle">ملفات PDF، تقارير، أوراق عمل ومستندات نصية</string>
+    <string name="docs_empty">لم يتم اختيار مستند</string>
+    <string name="docs_empty_desc">اختر ملف PDF أو نصياً من جهازك لطباعته أو إرساله إلى مركز الطباعة</string>
+    <string name="doc_name">اسم الملف</string>
+    <string name="doc_size">الحجم</string>
+    <string name="doc_pages">%d صفحة</string>
+    <string name="doc_status_ready">جاهز للطباعة</string>
+    
+    <!-- Quick Creator Screen -->
+    <string name="create_title">تحرير مستند جاهز</string>
+    <string name="create_subtitle">إنشاء مذكرة أو فاتورة أو خطاب رسمي جاهز للطباعة</string>
+    <string name="field_doc_title">عنوان المستند</string>
+    <string name="field_doc_title_hint">مثال: إفادة رسمية، فاتورة، خطاب</string>
+    <string name="field_doc_author">المرسل / الاسم</string>
+    <string name="field_doc_recipient">المستلم</string>
+    <string name="field_doc_content">النص / المحتوى</string>
+    <string name="field_doc_content_hint">اكتب محتوى المستند هنا...</string>
+    <string name="action_generate_pdf">توليد PDF وطباعة</string>
+    <string name="action_generate_send">توليد وإرسال</string>
+    
+    <!-- Send to Print Modal -->
+    <string name="send_modal_title">إرسال لمركز الطباعة</string>
+    <string name="send_modal_desc">تجهيز الملف مرفقاً ببطاقة مواصفات وتعليمات الطباعة</string>
+    <string name="recipient_type">طريقة الإرسال</string>
+    <string name="recipient_app">مشاركة عبر تطبيق (واتساب، إيميل...)</string>
+    <string name="recipient_email">إرسال بريد إلكتروني مباشر للطابعة</string>
+    <string name="recipient_email_address">البريد الإلكتروني للمركز أو الطابعة</string>
+    <string name="send_order_summary">بطاقة مواصفات طلب الطباعة</string>
+    <string name="send_success">تم إرسال الملف والتعليمات بنجاح</string>
+    
+    <!-- History Screen -->
+    <string name="history_title">سجل الطباعة</string>
+    <string name="history_subtitle">قائمة بعمليات الطباعة والإرسال الأخيرة</string>
+    <string name="history_empty">لا توجد عمليات طباعة سابقة</string>
+    <string name="history_empty_desc">ستظهر هنا عمليات الطباعة والإرسال التي قمت بها</string>
+    <string name="status_printed">تمت الطباعة على الجهاز</string>
+    <string name="status_sent">أُرسلت لمركز الطباعة</string>
+    <string name="action_reprint">إعادة الطباعة</string>
+    
+    <!-- Shops Screen -->
+    <string name="shops_title">مراكز الطباعة والمكاتب</string>
+    <string name="shops_subtitle">احفظ مراكز الطباعة المعتادة للإرسال السريع بنقرة واحدة</string>
+    <string name="shops_empty">لا توجد مراكز محفوظة</string>
+    <string name="shops_empty_desc">أضف كشك الطباعة، المكتبة المجاورة، أو بريد طابعة العمل</string>
+    <string name="action_add_shop">إضافة مركز طباعة</string>
+    <string name="field_shop_name">اسم المركز أو المكتب</string>
+    <string name="field_shop_email">البريد الإلكتروني (مثال: print@center.com)</string>
+    <string name="field_shop_phone">رقم الواتساب أو الهاتف</string>
+    <string name="field_shop_notes">ملاحظات / العنوان</string>
+    
+    <!-- Alerts & Confirmations -->
+    <string name="alert_no_printer">لم يتم العثور على خدمة طباعة. تأكد من الطابعات على الشبكة أو ثبت ملحق الشركة المصنعة.</string>
+    <string name="alert_print_started">جارٍ إرسال الملف إلى إدارة الطباعة...</string>
+    <string name="alert_print_done">تم إرسال أمر الطباعة بنجاح</string>
+    <string name="error_file_open">تعذر فتح الملف المحدد</string>
+</resources>

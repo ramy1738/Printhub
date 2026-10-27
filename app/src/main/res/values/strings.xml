@@ -1,0 +1,121 @@
+<resources>
+    <string name="app_name">ImprimeDoc</string>
+    <string name="app_tagline">Imprimez et envoyez vos documents et photos</string>
+    
+    <!-- Navigation Tabs -->
+    <string name="tab_photos">Photos</string>
+    <string name="tab_documents">Documents</string>
+    <string name="tab_create">Rédiger</string>
+    <string name="tab_history">Historique</string>
+    <string name="tab_shops">Centres d\'impression</string>
+    
+    <!-- Language Selection -->
+    <string name="language_title">Langue de l\'application</string>
+    <string name="lang_french">Français (Par défaut)</string>
+    <string name="lang_english">English</string>
+    <string name="lang_arabic">العربية</string>
+    <string name="switch_language">Changer la langue</string>
+    
+    <!-- Actions -->
+    <string name="action_print">Imprimer maintenant</string>
+    <string name="action_send_print">Envoyer pour impression</string>
+    <string name="action_select_photos">Sélectionner des photos</string>
+    <string name="action_select_document">Choisir un document (PDF, TXT)</string>
+    <string name="action_take_photo">Prendre une photo</string>
+    <string name="action_preview">Aperçu avant impression</string>
+    <string name="action_save">Enregistrer</string>
+    <string name="action_delete">Supprimer</string>
+    <string name="action_clear_all">Tout effacer</string>
+    <string name="action_share">Partager</string>
+    
+    <!-- Print Settings -->
+    <string name="settings_copies">Nombre d\'exemplaires</string>
+    <string name="settings_color_mode">Mode de couleur</string>
+    <string name="color_full">Couleur</string>
+    <string name="color_bw">Noir et Blanc (N&amp;B)</string>
+    <string name="settings_fit_mode">Mise en page</string>
+    <string name="fit_page">Ajuster à la page (Entier)</string>
+    <string name="fill_page">Remplir la page (Rogner)</string>
+    <string name="settings_orientation">Orientation</string>
+    <string name="orient_portrait">Portrait (Vertical)</string>
+    <string name="orient_landscape">Paysage (Horizontal)</string>
+    <string name="settings_paper_size">Format du papier</string>
+    <string name="paper_a4">A4 (Standard)</string>
+    <string name="paper_a3">A3 (Grand format)</string>
+    <string name="paper_letter">Lettre (US Letter)</string>
+    <string name="paper_photo">Photo (10x15 cm / 4x6")</string>
+    <string name="settings_duplex">Impression recto-verso</string>
+    <string name="duplex_single">Recto simple</string>
+    <string name="duplex_double">Recto-verso</string>
+    <string name="settings_binding">Finition / Reliure</string>
+    <string name="binding_none">Aucune reliure</string>
+    <string name="binding_staple">Agrafe en haut à gauche</string>
+    <string name="binding_spiral">Reliure spirale</string>
+    <string name="settings_instructions">Instructions pour l\'imprimeur</string>
+    <string name="instructions_hint">Ex: Papier 100g, plastifié, reliure spirale bleue...</string>
+    
+    <!-- Photo Screen -->
+    <string name="photos_title">Imprimer des Photos</string>
+    <string name="photos_subtitle">Photos de haute qualité avec aperçu et cadrage</string>
+    <string name="photos_empty">Aucune photo sélectionnée</string>
+    <string name="photos_empty_desc">Appuyez sur le bouton ci-dessous pour choisir une ou plusieurs photos à imprimer ou à envoyer</string>
+    <string name="photos_count">%d photo(s) sélectionnée(s)</string>
+    
+    <!-- Document Screen -->
+    <string name="docs_title">Imprimer des Documents</string>
+    <string name="docs_subtitle">Fichiers PDF, rapports, mémoires et documents texte</string>
+    <string name="docs_empty">Aucun document choisi</string>
+    <string name="docs_empty_desc">Sélectionnez un fichier PDF ou texte depuis votre appareil pour l\'imprimer ou l\'expédier à votre imprimeur</string>
+    <string name="doc_name">Nom du fichier</string>
+    <string name="doc_size">Taille</string>
+    <string name="doc_pages">%d page(s)</string>
+    <string name="doc_status_ready">Prêt pour l\'impression</string>
+    
+    <!-- Quick Creator Screen -->
+    <string name="create_title">Rédiger un Document</string>
+    <string name="create_subtitle">Créez une note, facture ou lettre officielle prête à imprimer</string>
+    <string name="field_doc_title">Titre du document</string>
+    <string name="field_doc_title_hint">Ex: Attestation, Lettre officielle, Facture</string>
+    <string name="field_doc_author">Émetteur / Votre nom</string>
+    <string name="field_doc_recipient">Destinataire</string>
+    <string name="field_doc_content">Texte / Contenu</string>
+    <string name="field_doc_content_hint">Rédigez ici le texte à imprimer...</string>
+    <string name="action_generate_pdf">Générer le PDF &amp; Imprimer</string>
+    <string name="action_generate_send">Générer &amp; Envoyer</string>
+    
+    <!-- Send to Print Modal -->
+    <string name="send_modal_title">Envoyer à un centre d\'impression</string>
+    <string name="send_modal_desc">Préparez le fichier avec la fiche des spécifications d\'impression</string>
+    <string name="recipient_type">Mode d\'envoi</string>
+    <string name="recipient_app">Partager via une application (WhatsApp, Mail...)</string>
+    <string name="recipient_email">Envoyer par Email direct à l\'imprimante</string>
+    <string name="recipient_email_address">Adresse email de l\'imprimeur</string>
+    <string name="send_order_summary">Fiche de commande d\'impression</string>
+    <string name="send_success">Fichier et instructions envoyés avec succès</string>
+    
+    <!-- History Screen -->
+    <string name="history_title">Historique des impressions</string>
+    <string name="history_subtitle">Journal de vos impressions et envois récents</string>
+    <string name="history_empty">Aucune impression récente</string>
+    <string name="history_empty_desc">Vos travaux d\'impression et documents expédiés apparaîtront ici</string>
+    <string name="status_printed">Imprimé sur l\'appareil</string>
+    <string name="status_sent">Envoyé à l\'imprimeur</string>
+    <string name="action_reprint">Réimprimer</string>
+    
+    <!-- Shops Screen -->
+    <string name="shops_title">Mes Imprimeurs &amp; Cybercafés</string>
+    <string name="shops_subtitle">Enregistrez vos centres d\'impression habituels pour un envoi en 1 clic</string>
+    <string name="shops_empty">Aucun imprimeur enregistré</string>
+    <string name="shops_empty_desc">Ajoutez votre cybercafé, papeterie ou l\'adresse ePrint de votre bureau</string>
+    <string name="action_add_shop">Ajouter un imprimeur</string>
+    <string name="field_shop_name">Nom de l\'imprimeur / bureau</string>
+    <string name="field_shop_email">Email (ex: imprimante@bureau.com)</string>
+    <string name="field_shop_phone">Numéro WhatsApp ou Téléphone</string>
+    <string name="field_shop_notes">Notes / Adresse</string>
+    
+    <!-- Alerts & Confirmations -->
+    <string name="alert_no_printer">Aucun service d\'impression trouvé. Vérifiez les imprimantes WiFi ou installez le plugin de votre fabricant.</string>
+    <string name="alert_print_started">Envoi vers le spouleur d\'impression...</string>
+    <string name="alert_print_done">Impression terminée avec succès</string>
+    <string name="error_file_open">Impossible d\'ouvrir le fichier sélectionné</string>
+</resources>
