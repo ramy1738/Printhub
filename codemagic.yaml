@@ -3,7 +3,7 @@ workflows:
   android-apk:
     name: Build Android APK
     max_build_duration: 30
-    instance_type: linux_x2
+    instance_type: mac_mini_m2
     environment:
       java: 21
     triggering:
@@ -20,6 +20,10 @@ workflows:
           # Ensure .env exists for the secrets plugin
           if [ ! -f .env ]; then
             cp .env.example .env || touch .env
+          fi
+          # Ensure sdk.dir is set if ANDROID_SDK_ROOT is present
+          if [ -n "$ANDROID_SDK_ROOT" ]; then
+            echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
           fi
           # Ensure gradlew has executable permissions
           chmod +x gradlew
