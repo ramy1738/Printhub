@@ -125,6 +125,7 @@ object PrintManagerHelper {
             PaperSize.A3 -> attributesBuilder.setMediaSize(PrintAttributes.MediaSize.ISO_A3)
             PaperSize.LETTER -> attributesBuilder.setMediaSize(PrintAttributes.MediaSize.NA_LETTER)
             PaperSize.PHOTO_4X6 -> attributesBuilder.setMediaSize(PrintAttributes.MediaSize.JPN_HAGAKI)
+            PaperSize.ROLL_80MM, PaperSize.ROLL_58MM -> attributesBuilder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
         }
 
         // Color mode mapping

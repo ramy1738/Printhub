@@ -89,6 +89,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _printOptions = MutableStateFlow(PrintOptions())
     val printOptions: StateFlow<PrintOptions> = _printOptions.asStateFlow()
 
+    // NokoPrint-style Print Controller (USB-OTG, Wi-Fi discovery, Drivers & Dual Engines)
+    val printController = com.example.printer.PrintController(application)
+    val selectedPrinter = printController.selectedPrinter
+    val selectedDriver = printController.selectedDriver
+    val discoveredPrinters = printController.discoveredPrinters
+    val isScanningPrinters = printController.isScanning
+    val printProgress = printController.printProgress
+
     // Room DB Flows
     val historyJobs = printJobDao.getAllJobs().stateIn(
         viewModelScope,
@@ -268,6 +276,62 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun emitToast(message: String) {
         viewModelScope.launch {
             _toastEvent.emit(message)
+        }
+    }
+
+    // Printer Actions
+    fun refreshPrinters() = printController.refreshPrinters()
+
+    fun startNetworkScan() {
+        viewModelScope.launch {
+            printController.startNetworkScan()
+        }
+    }
+
+    fun selectPrinter(printer: com.example.model.DiscoveredPrinter) = printController.selectPrinter(printer)
+
+    fun selectDriver(driver: com.example.model.DriverProfile) = printController.selectDriver(driver)
+
+    fun addManualPrinter(mfr: String, model: String, ip: String, port: Int) =
+        printController.addManualPrinter(mfr, model, ip, port)
+
+    fun removeSavedPrinter(printer: com.example.model.DiscoveredPrinter) =
+        printController.removeSavedPrinter(printer)
+
+    fun requestUsbPermission(printer: com.example.model.DiscoveredPrinter) {
+        val manager = getApplication<Application>().getSystemService(Context.USB_SERVICE) as? android.hardware.usb.UsbManager ?: return
+        val device = manager.deviceList.values.find { it.vendorId == printer.vendorId && it.productId == printer.productId } ?: return
+        printController.usbManager.requestUsbPermission(device) { granted ->
+            printController.refreshPrinters()
+            emitToast(if (granted) "Accès USB accordé !" else "Accès USB refusé")
+        }
+    }
+
+    fun dismissPrintProgress() = printController.dismissProgress()
+
+    fun executeDirectPrint(
+        title: String,
+        pages: List<Bitmap>,
+        pdfUri: Uri?,
+        options: PrintOptions,
+        onComplete: (Boolean, String?) -> Unit
+    ) {
+        viewModelScope.launch {
+            printController.executePrintJob(title, pages, pdfUri, options) { success, err ->
+                if (success) {
+                    val printerName = selectedPrinter.value?.name ?: "Imprimante directe"
+                    val driverName = selectedDriver.value.name
+                    recordPrintJob(
+                        title = title,
+                        uri = pdfUri ?: Uri.EMPTY,
+                        type = if (pages.size == 1 && pdfUri == null) PrintType.PHOTO else PrintType.PDF,
+                        action = JobActionType.PRINTED,
+                        recipient = "$printerName ($driverName)",
+                        instructions = options.customNotes
+                    )
+                }
+                onComplete(success, err)
+            }
         }
     }
 }

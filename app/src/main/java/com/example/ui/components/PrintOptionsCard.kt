@@ -248,9 +248,9 @@ fun PrintOptionsCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         val sizes = if (isPhotoMode) {
-                            listOf(PaperSize.PHOTO_4X6, PaperSize.A4, PaperSize.LETTER)
+                            listOf(PaperSize.PHOTO_4X6, PaperSize.A4, PaperSize.LETTER, PaperSize.ROLL_80MM)
                         } else {
-                            listOf(PaperSize.A4, PaperSize.A3, PaperSize.LETTER)
+                            listOf(PaperSize.A4, PaperSize.LETTER, PaperSize.ROLL_80MM, PaperSize.ROLL_58MM, PaperSize.A3)
                         }
 
                         sizes.forEach { size ->
@@ -264,6 +264,8 @@ fun PrintOptionsCard(
                                             PaperSize.A3 -> stringResource(R.string.paper_a3)
                                             PaperSize.LETTER -> stringResource(R.string.paper_letter)
                                             PaperSize.PHOTO_4X6 -> stringResource(R.string.paper_photo)
+                                            PaperSize.ROLL_80MM -> "Ticket 80mm"
+                                            PaperSize.ROLL_58MM -> "Ticket 58mm"
                                         },
                                         fontSize = 12.sp
                                     )

@@ -129,7 +129,15 @@ fun MainAppContent(viewModel: MainViewModel) {
     val historyJobs by viewModel.historyJobs.collectAsStateWithLifecycle()
     val printShops by viewModel.printShops.collectAsStateWithLifecycle()
 
+    val selectedPrinter by viewModel.selectedPrinter.collectAsStateWithLifecycle()
+    val selectedDriver by viewModel.selectedDriver.collectAsStateWithLifecycle()
+    val discoveredPrinters by viewModel.discoveredPrinters.collectAsStateWithLifecycle()
+    val isScanningPrinters by viewModel.isScanningPrinters.collectAsStateWithLifecycle()
+    val printProgress by viewModel.printProgress.collectAsStateWithLifecycle()
+
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var showPrinterDialogFromTopBar by remember { mutableStateOf(false) }
+    var showDriverDialogFromTopBar by remember { mutableStateOf(false) }
     var activePreviewItem by remember { mutableStateOf<PreviewItem?>(null) }
 
     // Toast listener
@@ -154,8 +162,25 @@ fun MainAppContent(viewModel: MainViewModel) {
             options = printOptions,
             savedShops = printShops,
             language = currentLanguage,
+            selectedPrinter = selectedPrinter,
+            selectedDriver = selectedDriver,
+            discoveredPrinters = discoveredPrinters,
+            isScanningPrinters = isScanningPrinters,
+            printProgress = printProgress,
+            driverRepository = viewModel.printController.driverRepository,
             onBack = { activePreviewItem = null },
             onOptionsChanged = { viewModel.updatePrintOptions(it) },
+            onRefreshPrinters = { viewModel.refreshPrinters() },
+            onStartNetworkScan = { viewModel.startNetworkScan() },
+            onSelectPrinter = { viewModel.selectPrinter(it) },
+            onSelectDriver = { viewModel.selectDriver(it) },
+            onAddManualPrinter = { mfr, model, ip, port -> viewModel.addManualPrinter(mfr, model, ip, port) },
+            onRemoveSavedPrinter = { viewModel.removeSavedPrinter(it) },
+            onRequestUsbPermission = { viewModel.requestUsbPermission(it) },
+            onDismissPrintProgress = { viewModel.dismissPrintProgress() },
+            onExecuteDirectPrint = { title, pages, pdfUri, opts, onComplete ->
+                viewModel.executeDirectPrint(title, pages, pdfUri, opts, onComplete)
+            },
             onRecordJob = { title, uri, type, action, recipient, instructions ->
                 viewModel.recordPrintJob(title, uri, type, action, recipient, instructions)
             }
@@ -165,6 +190,8 @@ fun MainAppContent(viewModel: MainViewModel) {
             topBar = {
                 TopNavBar(
                     currentLanguage = currentLanguage,
+                    printerName = selectedPrinter?.name,
+                    onOpenPrinterDialog = { showPrinterDialogFromTopBar = true },
                     onOpenLanguageDialog = { showLanguageDialog = true }
                 )
             },
@@ -309,6 +336,40 @@ fun MainAppContent(viewModel: MainViewModel) {
             currentLanguage = currentLanguage,
             onSelectLanguage = { viewModel.setLanguage(it) },
             onDismiss = { showLanguageDialog = false }
+        )
+    }
+
+    if (showPrinterDialogFromTopBar) {
+        com.example.ui.components.PrinterSelectionDialog(
+            printers = discoveredPrinters,
+            selectedPrinter = selectedPrinter,
+            selectedDriver = selectedDriver,
+            isScanning = isScanningPrinters,
+            language = currentLanguage,
+            onSelectPrinter = { viewModel.selectPrinter(it) },
+            onSelectDriver = { viewModel.selectDriver(it) },
+            onRefresh = { viewModel.refreshPrinters() },
+            onStartNetworkScan = { viewModel.startNetworkScan() },
+            onAddManualPrinter = { mfr, model, ip, port -> viewModel.addManualPrinter(mfr, model, ip, port) },
+            onRemoveSavedPrinter = { viewModel.removeSavedPrinter(it) },
+            onRequestUsbPermission = { viewModel.requestUsbPermission(it) },
+            onOpenDriverManager = {
+                showPrinterDialogFromTopBar = false
+                showDriverDialogFromTopBar = true
+            },
+            onDismiss = { showPrinterDialogFromTopBar = false }
+        )
+    }
+
+    if (showDriverDialogFromTopBar) {
+        com.example.ui.components.DriverRepositoryDialog(
+            driverRepository = viewModel.printController.driverRepository,
+            currentSelectedDriver = selectedDriver,
+            onSelectDriver = {
+                viewModel.selectDriver(it)
+                showDriverDialogFromTopBar = false
+            },
+            onDismiss = { showDriverDialogFromTopBar = false }
         )
     }
 }

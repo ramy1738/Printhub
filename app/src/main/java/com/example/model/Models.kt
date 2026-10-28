@@ -28,7 +28,9 @@ enum class PaperSize(val displayName: String) {
     A4("A4 (210 x 297 mm)"),
     A3("A3 (297 x 420 mm)"),
     LETTER("US Letter (8.5 x 11 in)"),
-    PHOTO_4X6("Photo (10 x 15 cm / 4x6 in)")
+    PHOTO_4X6("Photo (10 x 15 cm / 4x6 in)"),
+    ROLL_80MM("Ticket 80mm (Thermique)"),
+    ROLL_58MM("Ticket 58mm (Thermique)")
 }
 
 enum class PageOrientation {

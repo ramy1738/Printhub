@@ -45,6 +45,8 @@ import com.example.model.AppLanguage
 @Composable
 fun TopNavBar(
     currentLanguage: AppLanguage,
+    printerName: String? = null,
+    onOpenPrinterDialog: (() -> Unit)? = null,
     onOpenLanguageDialog: () -> Unit
 ) {
     CenterAlignedTopAppBar(
@@ -83,6 +85,39 @@ fun TopNavBar(
             }
         },
         actions = {
+            if (onOpenPrinterDialog != null) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f)
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier
+                        .testTag("btn_top_printer")
+                        .padding(end = 4.dp)
+                        .clickable { onOpenPrinterDialog() }
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Print,
+                            contentDescription = "Imprimantes",
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        if (!printerName.isNullOrBlank()) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = printerName.take(12),
+                                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
+                    }
+                }
+            }
+
             // Language selector button
             Card(
                 colors = CardDefaults.cardColors(

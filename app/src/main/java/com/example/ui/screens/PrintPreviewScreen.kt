@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -103,6 +104,19 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.math.roundToInt
 
+import com.example.model.DiscoveredPrinter
+import com.example.model.DriverProfile
+import com.example.model.PrintProgress
+import com.example.model.PrintProgressStatus
+import com.example.model.PrinterConnectionType
+import com.example.printer.driver.DriverRepository
+import com.example.ui.components.DriverRepositoryDialog
+import com.example.ui.components.PrinterSelectionDialog
+import com.example.ui.components.PrintProgressDialog
+import androidx.compose.material.icons.filled.Usb
+import androidx.compose.material.icons.filled.Wifi
+import androidx.compose.material.icons.filled.Devices
+
 sealed interface PreviewItem {
     data class PhotoItem(val uri: Uri, val title: String) : PreviewItem
     data class DocumentItem(val pdfUri: Uri, val title: String) : PreviewItem
@@ -115,14 +129,31 @@ fun PrintPreviewScreen(
     options: PrintOptions,
     savedShops: List<PrintShopEntity>,
     language: AppLanguage,
+    selectedPrinter: DiscoveredPrinter?,
+    selectedDriver: DriverProfile,
+    discoveredPrinters: List<DiscoveredPrinter>,
+    isScanningPrinters: Boolean,
+    printProgress: PrintProgress,
+    driverRepository: DriverRepository,
     onBack: () -> Unit,
     onOptionsChanged: (PrintOptions) -> Unit,
+    onRefreshPrinters: () -> Unit,
+    onStartNetworkScan: () -> Unit,
+    onSelectPrinter: (DiscoveredPrinter) -> Unit,
+    onSelectDriver: (DriverProfile) -> Unit,
+    onAddManualPrinter: (mfr: String, model: String, ip: String, port: Int) -> Unit,
+    onRemoveSavedPrinter: (DiscoveredPrinter) -> Unit,
+    onRequestUsbPermission: (DiscoveredPrinter) -> Unit,
+    onDismissPrintProgress: () -> Unit,
+    onExecuteDirectPrint: (title: String, pages: List<android.graphics.Bitmap>, pdfUri: Uri?, options: PrintOptions, onComplete: (Boolean, String?) -> Unit) -> Unit,
     onRecordJob: (title: String, uri: Uri, type: PrintType, action: JobActionType, recipient: String?, instructions: String?) -> Unit
 ) {
     val context = LocalContext.current
     BackHandler { onBack() }
 
     var showSendSheet by remember { mutableStateOf(false) }
+    var showPrinterDialog by remember { mutableStateOf(false) }
+    var showDriverDialog by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     // For PDF page rendering
@@ -164,6 +195,8 @@ fun PrintPreviewScreen(
             PaperSize.A4 -> 210f / 297f
             PaperSize.A3 -> 297f / 420f
             PaperSize.LETTER -> 8.5f / 11f
+            PaperSize.ROLL_80MM -> 80f / 120f
+            PaperSize.ROLL_58MM -> 58f / 90f
         }
         if (options.orientation == PageOrientation.LANDSCAPE) (1f / baseRatio) else baseRatio
     }
@@ -346,41 +379,36 @@ fun PrintPreviewScreen(
 
                         Button(
                             onClick = {
+                                if (selectedPrinter?.connectionType == PrinterConnectionType.USB && !selectedPrinter.hasUsbPermission) {
+                                    onRequestUsbPermission(selectedPrinter)
+                                    Toast.makeText(context, "Veuillez autoriser l'accès USB pour cette imprimante", Toast.LENGTH_SHORT).show()
+                                    return@Button
+                                }
+
+                                val pages = mutableListOf<android.graphics.Bitmap>()
                                 when (previewItem) {
                                     is PreviewItem.PhotoItem -> {
-                                        val bitmap = PrintManagerHelper.loadBitmapFromUri(context, previewItem.uri)
-                                        if (bitmap != null) {
-                                            PrintManagerHelper.printBitmap(
-                                                context = context,
-                                                bitmap = bitmap,
-                                                jobName = previewItem.title,
-                                                printOptions = options
-                                            ) { success, err ->
-                                                if (success) {
-                                                    Toast.makeText(context, context.getString(R.string.alert_print_started), Toast.LENGTH_SHORT).show()
-                                                    onRecordJob(previewItem.title, previewItem.uri, PrintType.PHOTO, JobActionType.PRINTED, "Imprimante directe", options.customNotes)
-                                                    onBack()
-                                                } else {
-                                                    Toast.makeText(context, err ?: "Erreur d'impression", Toast.LENGTH_LONG).show()
-                                                }
-                                            }
-                                        }
+                                        val bm = PrintManagerHelper.loadBitmapFromUri(context, previewItem.uri)
+                                        if (bm != null) pages.add(bm)
                                     }
                                     is PreviewItem.DocumentItem -> {
-                                        PrintManagerHelper.printPdfUri(
-                                            context = context,
-                                            pdfUri = previewItem.pdfUri,
-                                            jobName = previewItem.title,
-                                            printOptions = options
-                                        ) { success, err ->
-                                            if (success) {
-                                                Toast.makeText(context, context.getString(R.string.alert_print_started), Toast.LENGTH_SHORT).show()
-                                                onRecordJob(previewItem.title, previewItem.pdfUri, PrintType.PDF, JobActionType.PRINTED, "Imprimante directe", options.customNotes)
-                                                onBack()
-                                            } else {
-                                                Toast.makeText(context, err ?: "Erreur d'impression", Toast.LENGTH_LONG).show()
-                                            }
+                                        for (file in renderedPages) {
+                                            val bm = android.graphics.BitmapFactory.decodeFile(file.absolutePath)
+                                            if (bm != null) pages.add(bm)
                                         }
+                                    }
+                                }
+
+                                val targetPdfUri = (previewItem as? PreviewItem.DocumentItem)?.pdfUri
+                                val itemTitle = when (previewItem) {
+                                    is PreviewItem.PhotoItem -> previewItem.title
+                                    is PreviewItem.DocumentItem -> previewItem.title
+                                }
+                                onExecuteDirectPrint(itemTitle, pages, targetPdfUri, options) { success, err ->
+                                    if (success) {
+                                        Toast.makeText(context, "Impression envoyée avec succès !", Toast.LENGTH_SHORT).show()
+                                    } else if (err != null) {
+                                        Toast.makeText(context, err, Toast.LENGTH_LONG).show()
                                     }
                                 }
                             },
@@ -407,6 +435,79 @@ fun PrintPreviewScreen(
                 .background(Color(0xFF0F172A)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Printer & Driver Info Banner (NokoPrint-style)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                    .clickable { showPrinterDialog = true },
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White.copy(alpha = 0.12f)
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = when (selectedPrinter?.connectionType) {
+                                    PrinterConnectionType.USB -> Icons.Default.Usb
+                                    PrinterConnectionType.WIFI -> Icons.Default.Wifi
+                                    else -> Icons.Default.Devices
+                                },
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Column {
+                            val printerTitle = selectedPrinter?.name ?: "Sélectionner une imprimante"
+                            Text(
+                                text = printerTitle,
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                                maxLines = 1
+                            )
+                            Text(
+                                text = "Pilote : ${selectedDriver.name}",
+                                color = Color.LightGray,
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1
+                            )
+                        }
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.35f))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "Changer",
+                            color = Color.White,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
             // Zoom hint and controls bar
             Row(
                 modifier = Modifier
@@ -661,4 +762,46 @@ fun PrintPreviewScreen(
             }
         )
     }
+
+    // Printer Selection Dialog
+    if (showPrinterDialog) {
+        PrinterSelectionDialog(
+            printers = discoveredPrinters,
+            selectedPrinter = selectedPrinter,
+            selectedDriver = selectedDriver,
+            isScanning = isScanningPrinters,
+            language = language,
+            onSelectPrinter = onSelectPrinter,
+            onSelectDriver = onSelectDriver,
+            onRefresh = onRefreshPrinters,
+            onStartNetworkScan = onStartNetworkScan,
+            onAddManualPrinter = onAddManualPrinter,
+            onRemoveSavedPrinter = onRemoveSavedPrinter,
+            onRequestUsbPermission = onRequestUsbPermission,
+            onOpenDriverManager = {
+                showPrinterDialog = false
+                showDriverDialog = true
+            },
+            onDismiss = { showPrinterDialog = false }
+        )
+    }
+
+    // Driver Repository & Download Dialog
+    if (showDriverDialog) {
+        DriverRepositoryDialog(
+            driverRepository = driverRepository,
+            currentSelectedDriver = selectedDriver,
+            onSelectDriver = {
+                onSelectDriver(it)
+                showDriverDialog = false
+            },
+            onDismiss = { showDriverDialog = false }
+        )
+    }
+
+    // Live Print Progress Dialog
+    PrintProgressDialog(
+        progress = printProgress,
+        onDismiss = onDismissPrintProgress
+    )
 }
