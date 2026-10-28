@@ -316,6 +316,52 @@ object PdfGeneratorHelper {
     }
 
     /**
+     * Renders each page of a PDF into high-res images for Coil viewer
+     */
+    fun renderPdfPagesToFiles(context: Context, pdfUri: Uri, maxPages: Int = 30): List<File> {
+        val pageFiles = mutableListOf<File>()
+        val outputDir = File(context.cacheDir, "pdf_previews").apply {
+            mkdirs()
+            listFiles()?.forEach { it.delete() }
+        }
+
+        var pfd: ParcelFileDescriptor? = null
+        var renderer: PdfRenderer? = null
+        try {
+            pfd = context.contentResolver.openFileDescriptor(pdfUri, "r")
+            if (pfd != null) {
+                renderer = PdfRenderer(pfd)
+                val totalPages = minOf(renderer.pageCount, maxPages)
+                for (i in 0 until totalPages) {
+                    val page = renderer.openPage(i)
+                    val width = 1080
+                    val height = (width * page.height / page.width)
+                    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                    val canvas = Canvas(bitmap)
+                    canvas.drawColor(Color.WHITE)
+                    page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                    page.close()
+
+                    val file = File(outputDir, "page_${i + 1}.jpg")
+                    FileOutputStream(file).use { out ->
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 92, out)
+                    }
+                    bitmap.recycle()
+                    pageFiles.add(file)
+                }
+            }
+        } catch (_: Exception) {
+            // Fallback
+        } finally {
+            try {
+                renderer?.close()
+                pfd?.close()
+            } catch (_: Exception) {}
+        }
+        return pageFiles
+    }
+
+    /**
      * Get content Uri for a local File via FileProvider
      */
     fun getSharableUri(context: Context, file: File): Uri {

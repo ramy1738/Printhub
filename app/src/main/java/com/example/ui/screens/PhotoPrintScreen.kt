@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Print
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -94,7 +95,8 @@ fun PhotoPrintScreen(
     onRemovePhoto: (Uri) -> Unit,
     onClearPhotos: () -> Unit,
     onOptionsChanged: (PrintOptions) -> Unit,
-    onRecordJob: (title: String, uri: Uri, type: PrintType, action: JobActionType, recipient: String?, instructions: String?) -> Unit
+    onRecordJob: (title: String, uri: Uri, type: PrintType, action: JobActionType, recipient: String?, instructions: String?) -> Unit,
+    onOpenPreview: (PreviewItem) -> Unit
 ) {
     val context = LocalContext.current
     var showSendSheet by remember { mutableStateOf(false) }
@@ -294,7 +296,10 @@ fun PhotoPrintScreen(
                                     .fillMaxWidth()
                                     .aspectRatio(if (options.orientation == com.example.model.PageOrientation.LANDSCAPE) 4f / 3f else 3f / 4f)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFF0F172A)),
+                                    .background(Color(0xFF0F172A))
+                                    .clickable {
+                                        onOpenPreview(PreviewItem.PhotoItem(uri, "Photo (${options.paperSize.displayName})"))
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 val colorFilter = if (options.colorMode == ColorMode.MONOCHROME) {
@@ -328,6 +333,55 @@ fun PhotoPrintScreen(
                                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                                     )
                                 }
+
+                                // Tap to open preview overlay chip
+                                Card(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(8.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f)
+                                    ),
+                                    shape = RoundedCornerShape(20.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.ZoomIn,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            modifier = Modifier.size(14.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = stringResource(R.string.action_preview),
+                                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            OutlinedButton(
+                                onClick = {
+                                    onOpenPreview(PreviewItem.PhotoItem(uri, "Photo (${options.paperSize.displayName})"))
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("btn_open_photo_preview"),
+                                shape = RoundedCornerShape(10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ZoomIn,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(stringResource(R.string.action_open_preview), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }

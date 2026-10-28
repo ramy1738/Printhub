@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -83,7 +84,8 @@ fun DocumentPrintScreen(
     onSelectDocument: (Uri) -> Unit,
     onClearDocument: () -> Unit,
     onOptionsChanged: (PrintOptions) -> Unit,
-    onRecordJob: (title: String, uri: Uri, type: PrintType, action: JobActionType, recipient: String?, instructions: String?) -> Unit
+    onRecordJob: (title: String, uri: Uri, type: PrintType, action: JobActionType, recipient: String?, instructions: String?) -> Unit,
+    onOpenPreview: (PreviewItem) -> Unit
 ) {
     val context = LocalContext.current
     var showSendSheet by remember { mutableStateOf(false) }
@@ -254,7 +256,10 @@ fun DocumentPrintScreen(
                                     .height(200.dp)
                                     .clip(RoundedCornerShape(8.dp))
                                     .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
-                                    .background(androidx.compose.ui.graphics.Color.White),
+                                    .background(androidx.compose.ui.graphics.Color.White)
+                                    .clickable {
+                                        onOpenPreview(PreviewItem.DocumentItem(selectedDoc.uri, selectedDoc.name))
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Image(
@@ -263,6 +268,54 @@ fun DocumentPrintScreen(
                                     contentScale = ContentScale.Fit,
                                     modifier = Modifier.fillMaxSize()
                                 )
+
+                                Card(
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .padding(8.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.9f)
+                                    ),
+                                    shape = RoundedCornerShape(20.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = androidx.compose.material.icons.Icons.Default.PictureAsPdf,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            modifier = Modifier.size(14.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = stringResource(R.string.action_open_preview),
+                                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            OutlinedButton(
+                                onClick = {
+                                    onOpenPreview(PreviewItem.DocumentItem(selectedDoc.uri, selectedDoc.name))
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("btn_open_doc_preview"),
+                                shape = RoundedCornerShape(10.dp)
+                            ) {
+                                Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Default.PictureAsPdf,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(stringResource(R.string.action_open_preview), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                             }
                         }
 

@@ -82,7 +82,8 @@ fun ComposeDocScreen(
     onContentChange: (String) -> Unit,
     onClearDoc: () -> Unit,
     onOptionsChanged: (PrintOptions) -> Unit,
-    onRecordJob: (title: String, uri: Uri, type: PrintType, action: JobActionType, recipient: String?, instructions: String?) -> Unit
+    onRecordJob: (title: String, uri: Uri, type: PrintType, action: JobActionType, recipient: String?, instructions: String?) -> Unit,
+    onOpenPreview: (PreviewItem) -> Unit
 ) {
     val context = LocalContext.current
     var showSendSheet by remember { mutableStateOf(false) }
@@ -268,6 +269,29 @@ fun ComposeDocScreen(
                             .fillMaxWidth()
                             .testTag("input_doc_content")
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    OutlinedButton(
+                        onClick = {
+                            val uri = generateCurrentPdf()
+                            val safeTitle = if (title.isBlank()) "Document" else title
+                            onOpenPreview(PreviewItem.DocumentItem(uri, safeTitle))
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                            .testTag("btn_open_composed_preview"),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Default.PictureAsPdf,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(stringResource(R.string.action_open_preview), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
 

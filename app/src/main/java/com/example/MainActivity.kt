@@ -52,6 +52,8 @@ import com.example.ui.screens.DocumentPrintScreen
 import com.example.ui.screens.HistoryScreen
 import com.example.ui.screens.PhotoPrintScreen
 import com.example.ui.screens.PrintShopsScreen
+import com.example.ui.screens.PreviewItem
+import com.example.ui.screens.PrintPreviewScreen
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Resources
@@ -128,6 +130,7 @@ fun MainAppContent(viewModel: MainViewModel) {
     val printShops by viewModel.printShops.collectAsStateWithLifecycle()
 
     var showLanguageDialog by remember { mutableStateOf(false) }
+    var activePreviewItem by remember { mutableStateOf<PreviewItem?>(null) }
 
     // Toast listener
     LaunchedEffect(Unit) {
@@ -136,145 +139,166 @@ fun MainAppContent(viewModel: MainViewModel) {
         }
     }
 
-    // Predictive / Back handler: return to Photos tab if on a sub-screen
-    BackHandler(enabled = currentTab != AppNavTab.PHOTOS) {
-        viewModel.selectTab(AppNavTab.PHOTOS)
+    // Predictive / Back handler: if preview is open, close it; otherwise return to Photos tab
+    BackHandler(enabled = activePreviewItem != null || currentTab != AppNavTab.PHOTOS) {
+        if (activePreviewItem != null) {
+            activePreviewItem = null
+        } else {
+            viewModel.selectTab(AppNavTab.PHOTOS)
+        }
     }
 
-    Scaffold(
-        topBar = {
-            TopNavBar(
-                currentLanguage = currentLanguage,
-                onOpenLanguageDialog = { showLanguageDialog = true }
-            )
-        },
-        bottomBar = {
-            NavigationBar(
-                windowInsets = WindowInsets.navigationBars,
-                containerColor = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.testTag("bottom_nav_bar")
-            ) {
-                NavigationBarItem(
-                    selected = currentTab == AppNavTab.PHOTOS,
-                    onClick = { viewModel.selectTab(AppNavTab.PHOTOS) },
-                    icon = { Icon(Icons.Default.Image, contentDescription = null) },
-                    label = { Text(stringResource(R.string.tab_photos), fontSize = 11.sp) },
-                    modifier = Modifier.testTag("tab_photos")
-                )
-
-                NavigationBarItem(
-                    selected = currentTab == AppNavTab.DOCUMENTS,
-                    onClick = { viewModel.selectTab(AppNavTab.DOCUMENTS) },
-                    icon = { Icon(Icons.Default.Description, contentDescription = null) },
-                    label = { Text(stringResource(R.string.tab_documents), fontSize = 11.sp) },
-                    modifier = Modifier.testTag("tab_documents")
-                )
-
-                NavigationBarItem(
-                    selected = currentTab == AppNavTab.CREATE,
-                    onClick = { viewModel.selectTab(AppNavTab.CREATE) },
-                    icon = { Icon(Icons.Default.Create, contentDescription = null) },
-                    label = { Text(stringResource(R.string.tab_create), fontSize = 11.sp) },
-                    modifier = Modifier.testTag("tab_create")
-                )
-
-                NavigationBarItem(
-                    selected = currentTab == AppNavTab.HISTORY,
-                    onClick = { viewModel.selectTab(AppNavTab.HISTORY) },
-                    icon = { Icon(Icons.Default.History, contentDescription = null) },
-                    label = { Text(stringResource(R.string.tab_history), fontSize = 11.sp) },
-                    modifier = Modifier.testTag("tab_history")
-                )
-
-                NavigationBarItem(
-                    selected = currentTab == AppNavTab.SHOPS,
-                    onClick = { viewModel.selectTab(AppNavTab.SHOPS) },
-                    icon = { Icon(Icons.Default.Storefront, contentDescription = null) },
-                    label = { Text(stringResource(R.string.tab_shops), fontSize = 10.sp) },
-                    modifier = Modifier.testTag("tab_shops")
-                )
+    if (activePreviewItem != null) {
+        PrintPreviewScreen(
+            previewItem = activePreviewItem!!,
+            options = printOptions,
+            savedShops = printShops,
+            language = currentLanguage,
+            onBack = { activePreviewItem = null },
+            onOptionsChanged = { viewModel.updatePrintOptions(it) },
+            onRecordJob = { title, uri, type, action, recipient, instructions ->
+                viewModel.recordPrintJob(title, uri, type, action, recipient, instructions)
             }
-        },
-        modifier = Modifier.fillMaxSize()
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            when (currentTab) {
-                AppNavTab.PHOTOS -> {
-                    PhotoPrintScreen(
-                        photos = selectedPhotos,
-                        activePhotoIndex = activePhotoIndex,
-                        options = printOptions,
-                        savedShops = printShops,
-                        language = currentLanguage,
-                        onAddPhotos = { viewModel.addPhotos(it) },
-                        onSelectActivePhoto = { viewModel.setActivePhotoIndex(it) },
-                        onRemovePhoto = { viewModel.removePhoto(it) },
-                        onClearPhotos = { viewModel.clearPhotos() },
-                        onOptionsChanged = { viewModel.updatePrintOptions(it) },
-                        onRecordJob = { title, uri, type, action, recipient, instructions ->
-                            viewModel.recordPrintJob(title, uri, type, action, recipient, instructions)
-                        }
+        )
+    } else {
+        Scaffold(
+            topBar = {
+                TopNavBar(
+                    currentLanguage = currentLanguage,
+                    onOpenLanguageDialog = { showLanguageDialog = true }
+                )
+            },
+            bottomBar = {
+                NavigationBar(
+                    windowInsets = WindowInsets.navigationBars,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.testTag("bottom_nav_bar")
+                ) {
+                    NavigationBarItem(
+                        selected = currentTab == AppNavTab.PHOTOS,
+                        onClick = { viewModel.selectTab(AppNavTab.PHOTOS) },
+                        icon = { Icon(Icons.Default.Image, contentDescription = null) },
+                        label = { Text(stringResource(R.string.tab_photos), fontSize = 11.sp) },
+                        modifier = Modifier.testTag("tab_photos")
+                    )
+
+                    NavigationBarItem(
+                        selected = currentTab == AppNavTab.DOCUMENTS,
+                        onClick = { viewModel.selectTab(AppNavTab.DOCUMENTS) },
+                        icon = { Icon(Icons.Default.Description, contentDescription = null) },
+                        label = { Text(stringResource(R.string.tab_documents), fontSize = 11.sp) },
+                        modifier = Modifier.testTag("tab_documents")
+                    )
+
+                    NavigationBarItem(
+                        selected = currentTab == AppNavTab.CREATE,
+                        onClick = { viewModel.selectTab(AppNavTab.CREATE) },
+                        icon = { Icon(Icons.Default.Create, contentDescription = null) },
+                        label = { Text(stringResource(R.string.tab_create), fontSize = 11.sp) },
+                        modifier = Modifier.testTag("tab_create")
+                    )
+
+                    NavigationBarItem(
+                        selected = currentTab == AppNavTab.HISTORY,
+                        onClick = { viewModel.selectTab(AppNavTab.HISTORY) },
+                        icon = { Icon(Icons.Default.History, contentDescription = null) },
+                        label = { Text(stringResource(R.string.tab_history), fontSize = 11.sp) },
+                        modifier = Modifier.testTag("tab_history")
+                    )
+
+                    NavigationBarItem(
+                        selected = currentTab == AppNavTab.SHOPS,
+                        onClick = { viewModel.selectTab(AppNavTab.SHOPS) },
+                        icon = { Icon(Icons.Default.Storefront, contentDescription = null) },
+                        label = { Text(stringResource(R.string.tab_shops), fontSize = 10.sp) },
+                        modifier = Modifier.testTag("tab_shops")
                     )
                 }
+            },
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                when (currentTab) {
+                    AppNavTab.PHOTOS -> {
+                        PhotoPrintScreen(
+                            photos = selectedPhotos,
+                            activePhotoIndex = activePhotoIndex,
+                            options = printOptions,
+                            savedShops = printShops,
+                            language = currentLanguage,
+                            onAddPhotos = { viewModel.addPhotos(it) },
+                            onSelectActivePhoto = { viewModel.setActivePhotoIndex(it) },
+                            onRemovePhoto = { viewModel.removePhoto(it) },
+                            onClearPhotos = { viewModel.clearPhotos() },
+                            onOptionsChanged = { viewModel.updatePrintOptions(it) },
+                            onRecordJob = { title, uri, type, action, recipient, instructions ->
+                                viewModel.recordPrintJob(title, uri, type, action, recipient, instructions)
+                            },
+                            onOpenPreview = { activePreviewItem = it }
+                        )
+                    }
 
-                AppNavTab.DOCUMENTS -> {
-                    DocumentPrintScreen(
-                        selectedDoc = selectedDocument,
-                        options = printOptions,
-                        savedShops = printShops,
-                        language = currentLanguage,
-                        onSelectDocument = { viewModel.setDocument(it, context) },
-                        onClearDocument = { viewModel.clearDocument() },
-                        onOptionsChanged = { viewModel.updatePrintOptions(it) },
-                        onRecordJob = { title, uri, type, action, recipient, instructions ->
-                            viewModel.recordPrintJob(title, uri, type, action, recipient, instructions)
-                        }
-                    )
-                }
+                    AppNavTab.DOCUMENTS -> {
+                        DocumentPrintScreen(
+                            selectedDoc = selectedDocument,
+                            options = printOptions,
+                            savedShops = printShops,
+                            language = currentLanguage,
+                            onSelectDocument = { viewModel.setDocument(it, context) },
+                            onClearDocument = { viewModel.clearDocument() },
+                            onOptionsChanged = { viewModel.updatePrintOptions(it) },
+                            onRecordJob = { title, uri, type, action, recipient, instructions ->
+                                viewModel.recordPrintJob(title, uri, type, action, recipient, instructions)
+                            },
+                            onOpenPreview = { activePreviewItem = it }
+                        )
+                    }
 
-                AppNavTab.CREATE -> {
-                    ComposeDocScreen(
-                        title = composedTitle,
-                        author = composedAuthor,
-                        recipient = composedRecipient,
-                        content = composedContent,
-                        options = printOptions,
-                        savedShops = printShops,
-                        language = currentLanguage,
-                        onTitleChange = { viewModel.setComposedTitle(it) },
-                        onAuthorChange = { viewModel.setComposedAuthor(it) },
-                        onRecipientChange = { viewModel.setComposedRecipient(it) },
-                        onContentChange = { viewModel.setComposedContent(it) },
-                        onClearDoc = { viewModel.clearComposedDoc() },
-                        onOptionsChanged = { viewModel.updatePrintOptions(it) },
-                        onRecordJob = { title, uri, type, action, recipient, instructions ->
-                            viewModel.recordPrintJob(title, uri, type, action, recipient, instructions)
-                        }
-                    )
-                }
+                    AppNavTab.CREATE -> {
+                        ComposeDocScreen(
+                            title = composedTitle,
+                            author = composedAuthor,
+                            recipient = composedRecipient,
+                            content = composedContent,
+                            options = printOptions,
+                            savedShops = printShops,
+                            language = currentLanguage,
+                            onTitleChange = { viewModel.setComposedTitle(it) },
+                            onAuthorChange = { viewModel.setComposedAuthor(it) },
+                            onRecipientChange = { viewModel.setComposedRecipient(it) },
+                            onContentChange = { viewModel.setComposedContent(it) },
+                            onClearDoc = { viewModel.clearComposedDoc() },
+                            onOptionsChanged = { viewModel.updatePrintOptions(it) },
+                            onRecordJob = { title, uri, type, action, recipient, instructions ->
+                                viewModel.recordPrintJob(title, uri, type, action, recipient, instructions)
+                            },
+                            onOpenPreview = { activePreviewItem = it }
+                        )
+                    }
 
-                AppNavTab.HISTORY -> {
-                    HistoryScreen(
-                        jobs = historyJobs,
-                        language = currentLanguage,
-                        onDeleteJob = { viewModel.deleteHistoryJob(it) },
-                        onClearAll = { viewModel.clearAllHistory() }
-                    )
-                }
+                    AppNavTab.HISTORY -> {
+                        HistoryScreen(
+                            jobs = historyJobs,
+                            language = currentLanguage,
+                            onDeleteJob = { viewModel.deleteHistoryJob(it) },
+                            onClearAll = { viewModel.clearAllHistory() }
+                        )
+                    }
 
-                AppNavTab.SHOPS -> {
-                    PrintShopsScreen(
-                        shops = printShops,
-                        language = currentLanguage,
-                        onAddShop = { name, email, phone, notes ->
-                            viewModel.addShop(name, email, phone, notes)
-                        },
-                        onDeleteShop = { viewModel.deleteShop(it) }
-                    )
+                    AppNavTab.SHOPS -> {
+                        PrintShopsScreen(
+                            shops = printShops,
+                            language = currentLanguage,
+                            onAddShop = { name, email, phone, notes ->
+                                viewModel.addShop(name, email, phone, notes)
+                            },
+                            onDeleteShop = { viewModel.deleteShop(it) }
+                        )
+                    }
                 }
             }
         }

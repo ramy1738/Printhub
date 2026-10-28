@@ -27,6 +27,16 @@
     <string name="action_delete">Delete</string>
     <string name="action_clear_all">Clear All</string>
     <string name="action_share">Share</string>
+    <string name="action_open_preview">Preview before confirmation</string>
+    <string name="preview_title">Print Preview</string>
+    <string name="preview_subtitle">Verify framing, layout, and colors before confirming</string>
+    <string name="preview_page_indicator">Page %1$d of %2$d</string>
+    <string name="preview_zoom_hint">Pinch to zoom • Drag to inspect</string>
+    <string name="preview_reset_zoom">Reset Zoom</string>
+    <string name="preview_confirm_print">Confirm &amp; Print</string>
+    <string name="preview_confirm_send">Confirm &amp; Send</string>
+    <string name="preview_paper_guide">Simulated Paper Rendering</string>
+    <string name="preview_spec_summary">Order Summary</string>
     
     <!-- Print Settings -->
     <string name="settings_copies">Number of Copies</string>

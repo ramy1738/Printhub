@@ -27,6 +27,16 @@
     <string name="action_delete">Supprimer</string>
     <string name="action_clear_all">Tout effacer</string>
     <string name="action_share">Partager</string>
+    <string name="action_open_preview">Aperçu avant confirmation</string>
+    <string name="preview_title">Aperçu avant impression</string>
+    <string name="preview_subtitle">Vérifiez le cadrage et les couleurs avant confirmation</string>
+    <string name="preview_page_indicator">Page %1$d sur %2$d</string>
+    <string name="preview_zoom_hint">Pincez pour zoomer • Glissez pour naviguer</string>
+    <string name="preview_reset_zoom">Réinitialiser le zoom</string>
+    <string name="preview_confirm_print">Confirmer &amp; Imprimer</string>
+    <string name="preview_confirm_send">Confirmer &amp; Envoyer</string>
+    <string name="preview_paper_guide">Rendu simulé sur papier</string>
+    <string name="preview_spec_summary">Récapitulatif de la commande</string>
     
     <!-- Print Settings -->
     <string name="settings_copies">Nombre d\'exemplaires</string>
