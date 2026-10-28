@@ -25,6 +25,15 @@ workflows:
           if [ -n "$ANDROID_SDK_ROOT" ]; then
             echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
           fi
+          # Restore or generate debug.keystore for signingConfig debugConfig
+          if [ ! -f debug.keystore ]; then
+            if [ -f debug.keystore.base64 ]; then
+              python3 -c "import base64; open('debug.keystore','wb').write(base64.b64decode(open('debug.keystore.base64','rb').read()))" || true
+            fi
+          fi
+          if [ ! -f debug.keystore ]; then
+            keytool -genkeypair -v -keystore debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
           # Ensure gradlew has executable permissions
           chmod +x gradlew
       - name: Build Android Debug APK
